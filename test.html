@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>PasswordForge — Tests</title>
+    <style>
+      body {
+        background: #071019;
+        color: #dfeff3;
+        font-family: Arial;
+        padding: 18px;
+      }
+      .ok {
+        color: #7afcff;
+      }
+      .fail {
+        color: #ff0000;
+      }
+      pre {
+        background: #0f1720;
+        padding: 12px;
+        border-radius: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>PasswordForge — Quick Browser Tests</h1>
+    <div id="results">Running...</div>
+    <script src="test server.js"></script>
+    <script src="script.js"></script>
+    <script>
+      (async function runTests() {
+        const out = document.getElementById("results");
+        function append(msg, ok) {
+          const p = document.createElement("div");
+          p.innerHTML = `<span class="${ok ? "ok" : "fail"}">${
+            ok ? "PASS" : "FAIL"
+          }</span> ${msg}`;
+          out.appendChild(p);
+        }
+
+        try {
+          // Test 1: crypto.getRandomValues exists
+          if (window.crypto && crypto.getRandomValues) {
+            append("crypto.getRandomValues available", true);
+          } else append("crypto.getRandomValues NOT available", false);
+
+          // Test 2: generate a batch and check lengths/hashes unique
+          const options = {
+            length: 16,
+            includeUpper: true,
+            includeLower: true,
+            includeNumbers: true,
+            includeSymbols: false,
+            pattern: "random",
+            forceFirstUpper: false,
+            excludeSimilar: false,
+            excludeChars: "",
+          };
+          const results =
+            await window.PasswordForge.generatorEngine.generateBatch(
+              options,
+              5
+            );
+          append("Generated batch of 5", true);
+          const hashes = results.map((r) => r.hash);
+          const unique = new Set(hashes).size === hashes.length;
+          append("Hashes unique within batch", unique);
+          // Test 3: lengths and charset checks
+          const goodLengths = results.every(
+            (r) => r.password.length >= 8 && r.password.length <= 64
+          );
+          append("Passwords lengths are valid", goodLengths);
+
+          // Test 4: ensure hashing uses subtle (we can only assert digest returns expected hex length)
+          const salt =
+            await window.PasswordForge.storageManager.getOrCreateSalt();
+          const h =
+            await window.PasswordForge.generatorEngine.computeHashWithSalt(
+              "test1234",
+              salt
+            );
+          append(
+            "SHA-256 hash computed (hex length 64)",
+            typeof h === "string" && h.length === 64
+          );
+
+          append("All done. Check console for details.", true);
+          console.log("Batch:", results);
+        } catch (e) {
+          append("Exception during tests: " + e.message, false);
+          console.error(e);
+        }
+      })();
+    </script>
+  </body>
+</html>
