@@ -7,15 +7,15 @@ PasswordForge هو مولّد كلمات مرور آمن يعمل بالكامل
 
 ## الملفات
 
-- `index.html` — واجهة المستخدم (SPA).
-- `styles.css` — تصميم Dark-mode.
-- `app.js` — كل المنطق (generator, storage, crypto, UI).
+- `page.html` — واجهة المستخدم (SPA).
+- `style.css` — تصميم Dark-mode.
+- `script.js` — كل المنطق (generator, storage, crypto, UI).
 
 ---
 
 ## تشغيل محلي
 
-1. افتح `index.html` في أحدث متصفح (Chrome, Firefox, Edge, Safari).
+1. افتح `page.html` في أحدث متصفح (Chrome, Firefox, Edge, Safari).
    - لأداء ميزات الحافظة API (`navigator.clipboard.writeText`) قد تحتاج تشغيل الصفحة عبر `http://localhost` (مثلاً: باستخدام `npx http-server` أو فتح ملف على بعض المتصفحات يعمل).
 2. لا يحتاج المشروع لاتصال إنترنت.
 
@@ -95,9 +95,6 @@ PasswordForge هو مولّد كلمات مرور آمن يعمل بالكامل
 
 ---
 
-## OPTIONAL: server-example
-
-المجلد `server-example/` يحتوي مثالًا بسيطًا Node.js + Express + SQLite لتخزين الـhashs مركزياً (مرفوع بوضعية `OPTIONAL`). **لا تفعل أي اتصال إلى هذا السيرفر إلا بعد مراجعة سياسات الخصوصية والموافقة الصريحة للمستخدم**. راجع `server-example/README.md` داخل المجلد لمزيد من التفاصيل على كيفية التفعيل.
 
 ---
 
@@ -111,7 +108,7 @@ PasswordForge هو مولّد كلمات مرور آمن يعمل بالكامل
 
 ## Acceptance criteria — تحقق سريع
 
-- [x] فتح `index.html` يمكّن التوليد بالكامل offline.
+- [x] فتح `page.html` يمكّن التوليد بالكامل offline.
 - [x] كل كلمة مولدة تُحسَب لها SHA-256 وتُخزّن الـhashs (إن فعلت تلك الخاصية) مشفّرة محليًا.
 - [x] لا يوجد إرسال بيانات خارجي تلقائي.
 - [x] Copy يعمل عبر Clipboard API عندما يتاح (HTTPS/localhost).
